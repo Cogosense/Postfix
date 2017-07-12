@@ -1,6 +1,8 @@
 # Logger for Containers
 
-Use in a docker compose environment to centralize email relaying to smart host
+Use in a docker compose environment to centralize email relaying to a smart host
+
+Use in conjunction with [Logger](//github.com/Cogosense/Logger) for centralized logging
 
 An example docker-compose.yml
 
@@ -8,11 +10,21 @@ An example docker-compose.yml
         dev:
     services:
         logger:
-            image <registry>/postfix
-            volumes:
-                - ./var/log:/var/log
-        app:
-            image: <registry>/app
+            image <registry>/logger
             volumes:
                 - dev:/dev
+                - ./var/log:/var/log
+        smtp:
+            image <registry>/postfix
+            volumes:
+                - dev:/dev/logger
+            environment:
+                POSTFIX_HOSTNAME: $POSTFIX_HOSTNAME
+                POSTFIX_RELAYHOST: $POSTFIX_RELAYHOST
+            depends_on:
+                - "logger"
+        app:
+            image: <registry>/app
+            depends_on:
+                - smtp
 
