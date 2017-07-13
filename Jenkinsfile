@@ -24,7 +24,7 @@ node('docker') {
     stage ('Create Change Logs') {
         sshagent(['38bf8b09-9e52-421a-a8ed-5280fcb921af']) {
             try {
-                Utils.&copyArtifactWhenAvailable("Cogosense/Logger/${env.BRANCH_NAME}", 'SCM/CHANGELOG', 1, 0)
+                Utils.&copyArtifactWhenAvailable("Cogosense/Postfix/${env.BRANCH_NAME}", 'SCM/CHANGELOG', 1, 0)
             }
             catch(err) {}
 

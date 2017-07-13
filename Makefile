@@ -13,7 +13,7 @@ build :
 build-no-cache :
 	$(at)docker build --no-cache -t $(IMAGE) src
 
-tag :
+tag : build
 	$(at)if [ x"$(TAG)" != x ] ; then \
 		docker tag $(IMAGE) $(IMAGE):$(TAG) ; \
 		docker tag $(IMAGE) $(IMAGE):dev ; \
@@ -23,7 +23,6 @@ push : tag
 	$(at)if [ x"$(TAG)" != xunknown ] ; then \
 		if which -s aws ; then \
 			eval $$(aws ecr get-login --no-include-email --region us-west-2) ; \
-			docker tag $(IMAGE) $(IMAGE):devprd ; \
 			docker push $(IMAGE):dev ; \
 		else \
 			echo "AWS CLI must be installed to push images to AWS ECR". ; \
