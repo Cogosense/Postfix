@@ -5,7 +5,7 @@ properties properties: [
     ]
 ]
 
-node('ecs docker') {
+node('docker') {
 
     def contributors = null
     def Utils
