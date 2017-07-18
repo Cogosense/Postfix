@@ -4,7 +4,7 @@ properties(
     ]
 )
 
-node('ecs && docker') {
+node('docker') {
 
     def contributors = null
     def Utils
@@ -79,7 +79,7 @@ node('ecs && docker') {
 }
 
 def doCheckout() {
-    // Required because default behaviour changed in git plugin v2.4.0
+    // Required because default behaviour changed in git plugin v3.4.0
     // noTags changed from false to true.
     // Reguires script approval for following methods:
     // method hudson.plugins.git.GitSCM getBranches
