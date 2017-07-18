@@ -5,11 +5,13 @@ properties properties: [
     ]
 ]
 
-node('docker') {
+node('ecs docker') {
 
     def contributors = null
     def Utils
     def buildLabel
+    def gitLabel
+    def stageTag
     currentBuild.result = "SUCCESS"
 
     stage ('Checkout Source') {
@@ -19,6 +21,8 @@ node('docker') {
         // load pipeline utility functions
         Utils = load "utils/Utils.groovy"
         buildLabel = Utils.&getBuildLabel()
+        gitLabel = Utils.&getGitDescribe()
+        stageTag = Utils.&getDockerStageTag()
     }
 
     stage ('Create Change Logs') {
@@ -57,8 +61,8 @@ node('docker') {
 
         stage ('Push Docker') {
             docker.withRegistry('https://053262612181.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:bae55279-e86a-4337-b246-ba0b28902a91') {
-                app.push(Utils.&getGitDescribe())
-                app.push(Utils.&getDockerStageTag())
+                app.push(gitLabel)
+                app.push(stageTag)
             }
         }
 
