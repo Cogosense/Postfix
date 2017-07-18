@@ -1,28 +1,22 @@
-properties properties: [
+properties(
     [
-        $class: 'BuildDiscarderProperty',
-        strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '30']
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '30'))
     ]
-]
+)
 
-node('docker') {
+node('ecs && docker') {
 
     def contributors = null
     def Utils
     def buildLabel
-    def gitLabel
-    def stageTag
     currentBuild.result = "SUCCESS"
 
     stage ('Checkout Source') {
         deleteDir()
-        checkout scm
-        getUtils()
+        doCheckout()
         // load pipeline utility functions
         Utils = load "utils/Utils.groovy"
         buildLabel = Utils.&getBuildLabel()
-        gitLabel = Utils.&getGitDescribe()
-        stageTag = Utils.&getDockerStageTag()
     }
 
     stage ('Create Change Logs') {
@@ -61,8 +55,8 @@ node('docker') {
 
         stage ('Push Docker') {
             docker.withRegistry('https://053262612181.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:bae55279-e86a-4337-b246-ba0b28902a91') {
-                app.push(gitLabel)
-                app.push(stageTag)
+                app.push(Utils.&getGitDescribe())
+                app.push(Utils.&getDockerStageTag())
             }
         }
 
@@ -84,7 +78,21 @@ node('docker') {
     }
 }
 
-def getUtils() {
+def doCheckout() {
+    // Required because default behaviour changed in git plugin v2.4.0
+    // noTags changed from false to true.
+    // Reguires script approval for following methods:
+    // method hudson.plugins.git.GitSCM getBranches
+    // method hudson.plugins.git.GitSCM getUserRemoteConfigs
+    // method hudson.plugins.git.GitSCMBackwardCompatibility getExtensions
+
+    checkout([
+        $class: 'GitSCM',
+        branches: scm.branches,
+        extensions: scm.extensions + [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false]],
+        userRemoteConfigs: scm.userRemoteConfigs
+    ])
+
     // Load the SCM util scripts
     checkout([$class: 'GitSCM',
         branches: [[name: "*/${env.BRANCH_NAME}"]],
