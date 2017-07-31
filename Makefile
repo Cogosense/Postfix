@@ -29,3 +29,8 @@ push : tag
 			echo "https://aws.amazon.com/cli" ; \
 		fi ; \
 	fi
+
+devprd opsqa opsprd : push
+	docker tag $(IMAGE) $(IMAGE):$@
+	docker push $(IMAGE):$@
+

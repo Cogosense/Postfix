@@ -21,12 +21,17 @@ An example docker-compose.yml
             environment:
                 POSTFIX_HOSTNAME: $POSTFIX_HOSTNAME
                 POSTFIX_RELAYHOST: $POSTFIX_RELAYHOST
+                POSTFIX_AUTH_USERNAME: $POSTFIX_AUTH_USERNAME
+                POSTFIX_AUTH_PASSWORD: $POSTFIX_AUTH_PASSWORD
             depends_on:
                 - logger
         app:
             image: <registry>/app
             depends_on:
                 - smtp
+
+*POSTFIX\_AUTH\_USERNAME* and *POSTFIX\_AUTH\_PASSWORD* are optional and onlt required if the
+SMTP relay host requires SASL auth.
 
 If using logger, the following link must be created at runtime:
 

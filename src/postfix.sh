@@ -2,6 +2,9 @@
 POSTFIX_RUNDIR=/var/spool/postfix
 [ -n "$POSTFIX_HOSTNAME" ] || { echo "set POSTFIX_HOSTNAME parameter in .env file" ; exit 1; }
 [ -n "$POSTFIX_RELAYHOST" ] || { echo "set POSTFIX_RELAYHOST parameter in .env file" ; exit 1; }
+if [ -n "$POSTFIX_AUTH_USERNAME" ] ; then
+    [ -n "$POSTFIX_AUTH_PASSWORD" ] || { echo "set POSTFIX_AUTH_PASSWORD parameter in .env file" ; exit 1; }
+fi
 
 if [ -d /dev/logger ] ; then
     ln -sf /dev/logger/log /dev/log
@@ -25,6 +28,18 @@ MYNETWORK=$NETWORK/$PREFIX
 /usr/sbin/postconf alias_maps=hash:/etc/aliases
 
 newaliases
+
+if [ -n "$POSTFIX_AUTH_USERNAME" ] ; then
+    echo "[$POSTFIX_RELAYHOST] $POSTFIX_AUTH_USERNAME:$POSTFIX_AUTH_PASSWORD" > /etc/postfix/sasl_passwd
+    /usr/sbin/postmap /etc/postfix/sasl_passwd
+    chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+    chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+    /usr/sbin/postconf smtp_sasl_auth_enable=yes
+    /usr/sbin/postconf smtp_sasl_security_options=noanonymous
+    /usr/sbin/postconf smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd
+    /usr/sbin/postconf smtp_use_tls=yes
+    /usr/sbin/postconf smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt
+fi
 
 rm -f $POSTFIX_RUNDIR/pid/master.pid
 /usr/sbin/postfix start
