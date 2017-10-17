@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 POSTFIX_RUNDIR=/var/spool/postfix
 [ -n "$POSTFIX_HOSTNAME" ] || { echo "set POSTFIX_HOSTNAME parameter in .env file" ; exit 1; }
 if [ -n "$SES_AUTH_USERNAME" ] ; then
