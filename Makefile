@@ -15,7 +15,7 @@ build-no-cache :
 
 tag : build
 	$(at)if [ x"$(TAG)" != xunknown ] ; then \
-		docker tag $(IMAGE) $(IMAGE):$(TAG) ; \
+		docker tag $(IMAGE):$(STAGE) $(IMAGE):$(TAG) ; \
 	fi
 
 push : tag
