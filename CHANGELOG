@@ -1,0 +1,15 @@
+
+Production 4.4.1 created on Tue 28 Nov 2017 15:17:35 PST
+================================================================================
+9fe525c: steve.williams@telxio.com               : turn on debugging
+f716d65: steve.williams@telxio.com               : correct docker image tagging
+aaf947a: steve.williams@telxio.com               : add SMTP relay support amd AWS SES support
+d645178: steve.williams@telxio.com               : add support for SMTP authentication and TLS transport
+997cd62: steve.williams@telxio.com               : corrected readme information
+b6cb310: steve.williams@telxio.com               : change label
+fa0123d: steve.williams@telxio.com               : fix checkout after git plugin upgrade
+ac6bd00: steve.williams@telxio.com               : testing ecs slaves
+e3fefab: steve.williams@telxio.com               : add ecs tag
+4bb5447: steve.williams@telxio.com               : push dev not devprd
+072189d: steve.williams@telxio.com               : add link to logger
+53e7a68: steve.williams@telxio.com               : initial commit
