@@ -13,3 +13,7 @@ e3fefab: steve.williams@telxio.com               : add ecs tag
 4bb5447: steve.williams@telxio.com               : push dev not devprd
 072189d: steve.williams@telxio.com               : add link to logger
 53e7a68: steve.williams@telxio.com               : initial commit
+
+Production 4.4.2 created on Fri  1 Jun 2018 10:55:57 PDT
+================================================================================
+13f2023: steve.williams@telxio.com               : ignore .dockerignore file
