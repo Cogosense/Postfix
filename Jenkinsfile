@@ -8,6 +8,9 @@ node('docker') {
 
     def contributors = null
     def Utils
+    def imagename = 'postfix'
+    def shatag
+    def vertag
     def buildLabel
     currentBuild.result = "SUCCESS"
 
@@ -16,6 +19,8 @@ node('docker') {
         doCheckout()
         // load pipeline utility functions
         Utils = load "utils/Utils.groovy"
+        shatag = Utils.&getGitCommitSha()
+        vertag = Utils.&getGitDescribe()
         buildLabel = Utils.&getBuildLabel()
     }
 
@@ -49,15 +54,17 @@ node('docker') {
         def app
         stage ('Build Docker') {
             dir("./src") {
-                app = docker.build('postfix')
+                app = docker.build("053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${shatag}", '--pull --no-cache .')
             }
         }
 
         stage ('Push Docker') {
             docker.withRegistry('https://053262612181.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:bae55279-e86a-4337-b246-ba0b28902a91') {
-                app.push(Utils.&getGitDescribe())
+                app.push()
+                app.push(vertag)
                 app.push(Utils.&getDockerStageTag())
             }
+            sh "docker system prune --volumes -af"
         }
 
         stage ('Archive SCM') {
