@@ -9,7 +9,6 @@ node('docker') {
     def contributors = null
     def Utils
     def imagename = 'postfix'
-    def shatag
     def vertag
     def buildLabel
     currentBuild.result = "SUCCESS"
@@ -19,7 +18,6 @@ node('docker') {
         doCheckout()
         // load pipeline utility functions
         Utils = load "utils/Utils.groovy"
-        shatag = Utils.&getGitCommitSha()
         vertag = Utils.&getGitDescribe()
         buildLabel = Utils.&getBuildLabel()
     }
@@ -54,7 +52,7 @@ node('docker') {
         def app
         stage ('Build Docker') {
             dir("./src") {
-                app = docker.build("053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${shatag}", '--pull --no-cache .')
+                app = docker.build("053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.JOB_ID}", '--pull --no-cache .')
             }
         }
 
@@ -64,7 +62,12 @@ node('docker') {
                 app.push(vertag)
                 app.push(Utils.&getDockerStageTag())
             }
-            sh "docker system prune --volumes -af"
+            // Cleanup image so cache doesn't fill up
+            sh "docker rmi 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.JOB_ID} 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${vertag}"
+            // Don't remove the image with the stage tag - it may be currently being referenced
+            // by multiple concurrent build, just clean up dangling images left behind as the
+            // stage tag is moved forwards
+            sh "docker system prune -f 2> /dev/null || :"
         }
 
         stage ('Archive SCM') {
