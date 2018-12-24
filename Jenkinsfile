@@ -52,7 +52,7 @@ node('docker') {
         def app
         stage ('Build Docker') {
             dir("./src") {
-                app = docker.build("053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.JOB_ID}", '--pull --no-cache .')
+                app = docker.build("053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.BUILD_NUMBER}", '--pull --no-cache .')
             }
         }
 
@@ -63,7 +63,7 @@ node('docker') {
                 app.push(Utils.&getDockerStageTag())
             }
             // Cleanup image so cache doesn't fill up
-            sh "docker rmi 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.JOB_ID} 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${vertag}"
+            sh "docker rmi 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.BUILD_NUMBER} 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${vertag}"
             // Don't remove the image with the stage tag - it may be currently being referenced
             // by multiple concurrent build, just clean up dangling images left behind as the
             // stage tag is moved forwards
