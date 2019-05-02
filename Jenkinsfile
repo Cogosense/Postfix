@@ -67,7 +67,6 @@ node('docker') {
             // Don't remove the image with the stage tag - it may be currently being referenced
             // by multiple concurrent build, just clean up dangling images left behind as the
             // stage tag is moved forwards
-            sh "docker system prune -f 2> /dev/null || :"
         }
 
         stage ('Archive SCM') {

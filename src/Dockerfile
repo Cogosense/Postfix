@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:edge
 MAINTAINER Steve Williams <swilliams@cogosense.com>
 
 ENV TINI_SHA 066ad710107dc7ee05d3aa6e4974f01dc98f3888
@@ -26,7 +26,8 @@ RUN chown stunnel /etc/stunnel/mail.pem \
     && chown stunnel /var/log/stunnel \
     && mkdir /run/stunnel \
     && chown stunnel /run/stunnel \
-    && cat stunnel.conf >> /etc/stunnel/stunnel.conf && rm stunnel.conf
+    && cat stunnel.conf >> /etc/stunnel/stunnel.conf && rm stunnel.conf \
+    && postconf maillog_file=/var/log/smtp.log
 
 EXPOSE 25
 VOLUME ["/var/log", "/var/sppol/postfix"]
