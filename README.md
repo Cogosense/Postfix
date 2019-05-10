@@ -33,7 +33,6 @@ The container can be tested by running it locally
         -e POSTFIX_AUTH_USERNAME=<USERNAME> \
         -e POSTFIX_AUTH_PASSWORD="<PASSWORD>" \
         -v $PWD/log:/var/log \
-        -v $PWD/spool:/var/spool \
         --rm \
         053262612181.dkr.ecr.us-west-2.amazonaws.com/postfix:dev
 
@@ -65,7 +64,6 @@ An example docker-compose.yml
             image: <registry>/postfix
             volumes:
                 - ./log:/var/log
-                - ./spool:/var/spool
             environment:
                 POSTFIX_HOSTNAME: mailhost
                 POSTFIX_RELAYHOST: mailrelay.example.com:587
