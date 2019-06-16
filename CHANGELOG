@@ -25,3 +25,13 @@ Production 4.4.3 created on Fri  1 Jun 2018 10:56:50 PDT
 Production 4.4.4 created on Mon 24 Dec 2018 00:33:55 GMT
 ================================================================================
 
+
+Production 4.5.0 created on Sat 15 Jun 2019 23:12:01 PDT
+================================================================================
+1b9d5a5: steve.williams@telxio.com               : Remove Spool Bind Mount
+a80c19a: steve.williams@telxio.com               : Email Sending Failing on SES
+b04fd1c: steve.williams@telxio.com               : Log to a File
+668133b: steve.williams@telxio.com               : Merge branch '4.4.0'
+f500472: steve.williams@telxio.com               : Built Docker Images Are Being Tagged with null
+68310f2: steve.williams@telxio.com               : 2 instances of docker system prune causes build to fail\n\nrevert to JOB_ID tag for uniquesness
+ee6d53e: steve.williams@telxio.com               : Clean up docker using system prune
