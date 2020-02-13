@@ -2,7 +2,7 @@ FROM alpine:edge
 MAINTAINER Steve Williams <swilliams@cogosense.com>
 
 # install dev tools
-RUN apk --update add --no-cache tini postfix cyrus-sasl-plain ca-certificates
+RUN apk --update add --no-cache tini postfix cyrus-sasl-plain cyrus-sasl-login ca-certificates
 
 WORKDIR /var/run/postfix
 COPY . .
