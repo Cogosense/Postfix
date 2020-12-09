@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.12
 MAINTAINER Steve Williams <swilliams@cogosense.com>
 
 # install dev tools
