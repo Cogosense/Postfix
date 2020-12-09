@@ -41,6 +41,13 @@ eval `ipcalc -p $ipaddr`
 MYNETWORK=$NETWORK/$PREFIX
 
 #
+# rate limit
+#
+/usr/sbin/postconf smtp_destination_concurrency_limit=2
+/usr/sbin/postconf smtp_destination_rate_delay=1s
+/usr/sbin/postconf smtp_extra_recipient_limit=10
+
+#
 # log to file
 #
 /usr/sbin/postconf maillog_file=/var/log/maillog
