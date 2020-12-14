@@ -35,3 +35,10 @@ b04fd1c: steve.williams@telxio.com               : Log to a File
 f500472: steve.williams@telxio.com               : Built Docker Images Are Being Tagged with null
 68310f2: steve.williams@telxio.com               : 2 instances of docker system prune causes build to fail\n\nrevert to JOB_ID tag for uniquesness
 ee6d53e: steve.williams@telxio.com               : Clean up docker using system prune
+
+Production 4.5.1 created on Sun 13 Dec 2020 19:25:12 PST
+================================================================================
+790147b: steve.williams@telxio.com               : Change Base Image to Alpine v3.12
+e4323c6: steve.williams@telxio.com               : Rate Limit Emails To the Same Domain
+7ab81f0: steve.williams@telxio.com               : Add Support For AWS Cli v2
+f607bae: steve.williams@telxio.com               : Add cyrus-sasl-login mechanism
