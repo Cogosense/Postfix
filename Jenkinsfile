@@ -18,14 +18,14 @@ node('docker') {
         doCheckout()
         // load pipeline utility functions
         Utils = load "utils/Utils.groovy"
-        vertag = Utils.&getGitDescribe()
-        buildLabel = Utils.&getBuildLabel()
+        vertag = Utils.getGitDescribe()
+        buildLabel = Utils.getBuildLabel()
     }
 
     stage ('Create Change Logs') {
         sshagent(['38bf8b09-9e52-421a-a8ed-5280fcb921af']) {
             try {
-                Utils.&copyArtifactWhenAvailable("Cogosense/Postfix/${env.BRANCH_NAME}", 'SCM/CHANGELOG', 1, 0)
+                Utils.copyArtifactWhenAvailable("Cogosense/Postfix/${env.BRANCH_NAME}", 'SCM/CHANGELOG', 1, 0)
             }
             catch(err) {}
 
@@ -46,7 +46,7 @@ node('docker') {
         contributors = readFile './SCM/ONHOOK_EMAIL'
 
         stage ('Notify Build Started') {
-            Utils.&sendOnHookEmail(contributors)
+            Utils.sendOnHookEmail(contributors)
         }
 
         def app
@@ -59,11 +59,11 @@ node('docker') {
         stage ('Push Docker') {
             docker.withRegistry('https://053262612181.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:bae55279-e86a-4337-b246-ba0b28902a91') {
                 app.push()
-                app.push(vertag)
-                app.push(Utils.&getDockerStageTag())
+                app.push("${Utils.getDockerStageTag()}-${vertag}")
+                app.push(Utils.getDockerStageTag())
             }
             // Cleanup image so cache doesn't fill up
-            sh "docker rmi 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.BUILD_NUMBER} 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${vertag}"
+            sh "docker rmi 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${env.BUILD_NUMBER} 053262612181.dkr.ecr.us-west-2.amazonaws.com/${imagename}:${Utils.getDockerStageTag()}-${vertag}"
             // Don't remove the image with the stage tag - it may be currently being referenced
             // by multiple concurrent build, just clean up dangling images left behind as the
             // stage tag is moved forwards
@@ -78,12 +78,12 @@ node('docker') {
     }
     catch(err) {
         currentBuild.result = "FAILURE"
-        Utils.&sendFailureEmail(contributors, err)
+        Utils.sendFailureEmail(contributors, err)
         throw err
     }
 
     stage ('Notify Build Completion') {
-        Utils.&sendOffHookEmail(contributors)
+        Utils.sendOffHookEmail(contributors)
     }
 }
 
